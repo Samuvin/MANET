@@ -57,12 +57,12 @@ export default function MorseDecoder() {
       <textarea
         id="morse-input"
         name="morse"
-        rows={4}
-        placeholder="e.g. ... --- ...   .... . .-.. .-.. ---"
+        rows={2}
+        placeholder="e.g. .... ..-- . ..-- -.--"
         aria-describedby="morse-hint"
         value={morseInput}
         onChange={(e) => setMorseInput(e.target.value)}
-        className="morse-input"
+        className="morse-input morse-input-masked"
       />
       <p id="morse-hint" className="hint">
         Use dots (.), dashes (-), and spaces. Words separated by 3+ spaces.

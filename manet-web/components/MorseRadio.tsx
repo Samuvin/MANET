@@ -77,6 +77,9 @@ export default function MorseRadio() {
         return;
       }
       const ctx = soundOn ? initAudioContext() : null;
+      if (ctx?.state === 'suspended') {
+        ctx.resume().catch(() => {});
+      }
       const t0 = ctx ? ctx.currentTime : 0;
       let cumulMs = 0;
       for (let i = 0; i < schedule.length; i++) {
@@ -110,6 +113,7 @@ export default function MorseRadio() {
       timeoutsRef.current = [];
       setSignalOn(false);
       setIsPlaying(false);
+      audioContextRef.current?.suspend().catch(() => {});
       return;
     }
     const result = validateInput(message, MAX_MESSAGE_LENGTH);
@@ -240,24 +244,6 @@ export default function MorseRadio() {
             aria-live="polite"
             aria-label="Radio signal indicator"
           />
-        </div>
-        <div className="morse-output-container">
-          <label htmlFor="morse-output">Morse code</label>
-          <output
-            id="morse-output"
-            htmlFor="message-input"
-            className="morse-output"
-          >
-            {morse || '\u00a0'}
-          </output>
-          <button
-            type="button"
-            onClick={handleCopy}
-            className="btn btn-small"
-            aria-label="Copy Morse code to clipboard"
-          >
-            Copy
-          </button>
         </div>
       </section>
 
