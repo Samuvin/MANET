@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MANET Morse Radio</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="container">
+    <header>
+      <h1>MANET Morse Radio</h1>
+      <p class="tagline">Type a message and send it as radio signals (Morse code)</p>
+    </header>
+
+    <section class="input-section">
+      <label for="message-input">Message</label>
+      <textarea
+        id="message-input"
+        name="message"
+        rows="4"
+        maxlength="500"
+        placeholder="Enter your message (A–Z, 0–9, spaces only)"
+        aria-describedby="message-hint"
+      ></textarea>
+      <p id="message-hint" class="hint">Max 500 characters. Only letters, numbers, and spaces are transmitted.</p>
+    </section>
+
+    <section class="controls">
+      <div class="control-group">
+        <label for="sound-toggle">Sound</label>
+        <input type="checkbox" id="sound-toggle" name="sound" checked aria-label="Enable sound for Morse code">
+      </div>
+      <div class="control-group">
+        <label for="wpm-slider">Speed (WPM)</label>
+        <input type="range" id="wpm-slider" name="wpm" min="5" max="25" value="15" aria-label="Words per minute">
+        <span id="wpm-value" aria-live="polite">15</span> WPM
+      </div>
+      <button type="button" id="play-btn" class="btn btn-primary">Play as radio</button>
+      <button type="button" id="copy-btn" class="btn btn-secondary">Copy Morse</button>
+    </section>
+
+    <section class="output-section">
+      <div class="signal-container">
+        <span class="signal-label">Signal</span>
+        <div id="signal-indicator" class="signal-indicator" role="status" aria-live="polite" aria-label="Radio signal indicator"></div>
+      </div>
+      <div class="morse-output-container">
+        <label for="morse-output">Morse code</label>
+        <output id="morse-output" for="message-input" class="morse-output"></output>
+        <button type="button" id="copy-morse-btn" class="btn btn-small" aria-label="Copy Morse code to clipboard">Copy</button>
+      </div>
+    </section>
+
+    <p id="status" class="status" role="status" aria-live="polite"></p>
+  </main>
+  <script src="morse.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
