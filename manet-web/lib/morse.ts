@@ -16,7 +16,22 @@ const MORSE_MAP: Record<string, string> = {
   '5': '.....', '6': '-....', '7': '--...', '8': '---..', '9': '----.',
 };
 
+/** Reverse map: Morse code sequence -> character (for decoding). */
+export const MORSE_TO_CHAR: Record<string, string> = (() => {
+  const out: Record<string, string> = {};
+  for (const [char, code] of Object.entries(MORSE_MAP)) {
+    out[code] = char;
+  }
+  return out;
+})();
+
+/** Marker in Morse stream meaning "next letter is lowercase". Enables exact casing. */
+const LOWER_MARKER = '..--';
+
 export const MAX_MESSAGE_LENGTH = 500;
+
+/** Max length for Morse input when decoding (avoid huge inputs). */
+export const MAX_MORSE_INPUT_LENGTH = 2000;
 
 export function charToMorse(c: string): string {
   return MORSE_MAP[c.toUpperCase()] ?? '';
@@ -31,8 +46,12 @@ export function textToMorse(text: string | null | undefined): string {
     .map((word) =>
       word
         .split('')
-        .map((ch) => charToMorse(ch))
-        .filter((s) => s.length > 0)
+        .flatMap((ch) => {
+          const code = charToMorse(ch);
+          if (!code) return [];
+          const isLower = /[a-z]/.test(ch);
+          return isLower ? [LOWER_MARKER, code] : [code];
+        })
         .join(' ')
     )
     .join('   ');
@@ -95,4 +114,59 @@ export function validateInput(
   const sanitized = capped.replace(/[^A-Za-z0-9\s]/g, '');
   if (sanitized.length === 0) return { valid: false, sanitized: capped };
   return { valid: true, sanitized };
+}
+
+export type MorseValidationResult =
+  | { valid: true; sanitized: string }
+  | { valid: false; sanitized: string };
+
+/**
+ * Validates Morse decoder input: trim, allow only dots, dashes, spaces; optional max length.
+ */
+export function validateMorseInput(
+  raw: string | null | undefined,
+  maxLength: number = MAX_MORSE_INPUT_LENGTH
+): MorseValidationResult {
+  const maxLen = maxLength > 0 ? maxLength : MAX_MORSE_INPUT_LENGTH;
+  if (typeof raw !== 'string') return { valid: false, sanitized: '' };
+  const trimmed = raw.trim();
+  if (trimmed.length === 0) return { valid: false, sanitized: '' };
+  const capped = trimmed.length > maxLen ? trimmed.slice(0, maxLen) : trimmed;
+  const sanitized = capped.replace(/[^.\-\s]/g, '');
+  if (sanitized.length === 0) return { valid: false, sanitized: '' };
+  return { valid: true, sanitized };
+}
+
+/**
+ * Decodes a Morse string to plain text.
+ * Letters separated by single space; words by three or more spaces.
+ * "..--" means next letter is lowercase (exact casing). Unknown codes -> '?'.
+ */
+export function morseToText(morse: string | null | undefined): string {
+  if (morse == null || typeof morse !== 'string') return '';
+  const trimmed = morse.trim();
+  if (trimmed.length === 0) return '';
+  const words = trimmed.split(/\s{3,}/);
+  return words
+    .map((word) => {
+      const codes = word.split(/\s+/).filter((c) => c.length > 0);
+      let nextLower = false;
+      return codes
+        .map((code) => {
+          if (code === LOWER_MARKER) {
+            nextLower = true;
+            return '';
+          }
+          const char = MORSE_TO_CHAR[code];
+          if (char === undefined) {
+            nextLower = false;
+            return '?';
+          }
+          const out = nextLower ? char.toLowerCase() : char;
+          nextLower = false;
+          return out;
+        })
+        .join('');
+    })
+    .join(' ');
 }

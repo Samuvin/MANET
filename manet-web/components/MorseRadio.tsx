@@ -33,9 +33,9 @@ export default function MorseRadio() {
     const result = validateInput(capped);
     if (result.valid) {
       setMorse(textToMorse(result.sanitized));
-    } else {
-      setMorse('');
+      return result.sanitized;
     }
+    setMorse('');
     return capped;
   }, []);
 
@@ -166,15 +166,12 @@ export default function MorseRadio() {
   );
 
   return (
-    <main className="container">
-      <header>
-        <h1>MANET Morse Radio</h1>
-        <p className="tagline">
-          Type a message and send it as radio signals (Morse code)
-        </p>
-      </header>
-
-      <section className="input-section">
+    <section className="send-section">
+      <h2 className="section-heading">Send</h2>
+      <p className="section-desc">
+        Encode a message to Morse and play it as radio signals.
+      </p>
+      <div className="input-section">
         <label htmlFor="message-input">Message</label>
         <textarea
           id="message-input"
@@ -190,7 +187,7 @@ export default function MorseRadio() {
           Max {MAX_MESSAGE_LENGTH} characters. Only letters, numbers, and
           spaces are transmitted.
         </p>
-      </section>
+      </div>
 
       <section className="controls">
         <div className="control-group">
@@ -273,6 +270,6 @@ export default function MorseRadio() {
           {status}
         </p>
       )}
-    </main>
+    </section>
   );
 }
