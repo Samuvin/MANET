@@ -739,11 +739,22 @@ header h1 {
   position: absolute;
   width: 52px;
   height: 52px;
+  min-width: 52px;
+  min-height: 52px;
   border: none;
   border-radius: 50%;
   background: transparent;
   cursor: pointer;
   padding: 0;
+}
+
+@media (max-width: 640px) {
+  .manet-demo-node-hit {
+    width: 56px;
+    height: 56px;
+    min-width: 56px;
+    min-height: 56px;
+  }
 }
 
 .manet-demo-node-hit:hover:not(:disabled) {
@@ -759,11 +770,132 @@ header h1 {
   cursor: not-allowed;
 }
 
+.manet-demo-node-tooltip {
+  margin-top: 0.5rem;
+  padding: 0.4rem 0.6rem;
+  font-size: 0.8rem;
+  color: var(--text);
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  max-width: 20rem;
+}
+
+.manet-demo-hop-badge {
+  margin: 0.5rem 0 0 0;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--primary);
+}
+
+.manet-demo-alternatives {
+  margin: 0.35rem 0 0 0;
+}
+
+.manet-demo-alt-line {
+  margin: 0.15rem 0 0 0;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  font-family: ui-monospace, monospace;
+}
+
 .manet-demo-status {
   margin: 0.75rem 0 0 0;
   font-size: 0.875rem;
   color: var(--text-muted);
   min-height: 1.5rem;
+}
+
+.morse-sample-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.morse-sample-label {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.morse-reference-section {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+}
+
+.morse-reference-trigger {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--signal-on);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.25rem 0;
+}
+
+.morse-reference-trigger:hover {
+  text-decoration: underline;
+}
+
+.morse-reference-trigger:focus {
+  outline: none;
+  border-radius: 4px;
+  box-shadow: 0 0 0 2px var(--focus-ring);
+}
+
+.morse-reference-content {
+  margin-top: 0.75rem;
+}
+
+.morse-reference-content[hidden] {
+  display: none;
+}
+
+.morse-reference-desc {
+  margin: 0 0 0.5rem 0;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.morse-reference-tables {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem 2rem;
+}
+
+.morse-reference-table-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.morse-reference-table-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.morse-reference-table {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0 1rem;
+  font-size: 0.8rem;
+  font-family: ui-monospace, monospace;
+}
+
+.morse-reference-cell {
+  display: contents;
+}
+
+.morse-ref-char {
+  font-weight: 600;
+  color: var(--text);
+}
+
+.morse-ref-code {
+  color: var(--text-muted);
 }
 
 .morse-optional-section {

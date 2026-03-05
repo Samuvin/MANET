@@ -6,7 +6,8 @@
 const DOT = '.';
 const DASH = '-';
 
-const MORSE_MAP: Record<string, string> = {
+/** Letter/digit to Morse (for encoding and reference table). */
+export const MORSE_MAP: Record<string, string> = {
   A: '.-', B: '-...', C: '-.-.', D: '-..', E: '.', F: '..-.',
   G: '--.', H: '....', I: '..', J: '.---', K: '-.-', L: '.-..',
   M: '--', N: '-.', O: '---', P: '.--.', Q: '--.-', R: '.-.',

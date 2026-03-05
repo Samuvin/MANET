@@ -79,6 +79,55 @@ function shortestPath(source: NodeId, dest: NodeId): NodeId[] {
   return [];
 }
 
+/** Set of edges as "from-to" strings for exclusion. */
+function pathToEdgeSet(path: NodeId[]): Set<string> {
+  const set = new Set<string>();
+  for (let i = 0; i < path.length - 1; i++) {
+    const a = path[i];
+    const b = path[i + 1];
+    set.add(a < b ? `${a}-${b}` : `${b}-${a}`);
+  }
+  return set;
+}
+
+/** BFS shortest path avoiding edges in excludeEdges. Returns path or empty array. */
+function shortestPathExcluding(
+  source: NodeId,
+  dest: NodeId,
+  excludeEdges: Set<string>
+): NodeId[] {
+  if (source === dest) return [source];
+  const queue: { node: NodeId; path: NodeId[] }[] = [{ node: source, path: [source] }];
+  const visited = new Set<NodeId>([source]);
+  while (queue.length > 0) {
+    const { node, path } = queue.shift()!;
+    for (const next of GRAPH[node] ?? []) {
+      const edge = node < next ? `${node}-${next}` : `${next}-${node}`;
+      if (excludeEdges.has(edge)) continue;
+      if (next === dest) return [...path, next];
+      if (visited.has(next)) continue;
+      visited.add(next);
+      queue.push({ node: next, path: [...path, next] });
+    }
+  }
+  return [];
+}
+
+/** Returns up to maxPaths paths (shortest first), including alternatives. */
+function getPaths(source: NodeId, dest: NodeId, maxPaths: number): NodeId[][] {
+  const out: NodeId[][] = [];
+  let excluded = new Set<string>();
+  for (let i = 0; i < maxPaths; i++) {
+    const p = excluded.size === 0
+      ? shortestPath(source, dest)
+      : shortestPathExcluding(source, dest, excluded);
+    if (p.length === 0) break;
+    out.push(p);
+    excluded = new Set([...excluded, ...pathToEdgeSet(p)]);
+  }
+  return out;
+}
+
 const SPEED_OPTIONS = [
   { value: 400, label: 'Slower' },
   { value: 600, label: 'Normal' },
@@ -94,6 +143,8 @@ export default function ManetDemo() {
   const [dest, setDest] = useState<NodeId>('L');
   const [messageInput, setMessageInput] = useState('');
   const [path, setPath] = useState<NodeId[]>([]);
+  const [alternativePaths, setAlternativePaths] = useState<NodeId[][]>([]);
+  const [hoveredNode, setHoveredNode] = useState<NodeId | null>(null);
   const [activeIndex, setActiveIndex] = useState(-1);
   const [status, setStatus] = useState('');
   const [flowLine, setFlowLine] = useState('');
@@ -104,18 +155,24 @@ export default function ManetDemo() {
 
   const runPath = useCallback(
     (replay = false) => {
-      const nextPath = replay && path.length > 0 ? path : shortestPath(source, dest);
-      if (!replay) setPath(nextPath);
+      const paths = replay && path.length > 0 ? [path] : getPaths(source, dest, 3);
+      const nextPath = paths[0] ?? [];
+      if (!replay) {
+        setPath(nextPath);
+        setAlternativePaths(paths.slice(1));
+      }
       setActiveIndex(-1);
       setStatus('');
       setFlowLine('');
       setReceivedText('');
       if (nextPath.length === 0) {
         setStatus('No path between selected nodes.');
+        setAlternativePaths([]);
         return;
       }
       if (nextPath.length === 1) {
         setStatus('Source and destination are the same.');
+        setAlternativePaths([]);
         return;
       }
       const validated = validateInput(messageInput.trim(), MAX_MESSAGE_LENGTH);
@@ -407,14 +464,24 @@ export default function ManetDemo() {
               type="button"
               className="manet-demo-node-hit"
               onClick={() => handleNodeClick(id)}
+              onMouseEnter={() => setHoveredNode(id)}
+              onMouseLeave={() => setHoveredNode(null)}
+              onFocus={() => setHoveredNode(id)}
+              onBlur={() => setHoveredNode(null)}
               disabled={isAnimating}
               style={{ left: `${pctX}%`, top: `${pctY}%`, transform: 'translate(-50%, -50%)' }}
-              aria-label={`Node ${id}. Click to set as destination.`}
+              aria-label={`Node ${id}. ${GRAPH[id]?.length ?? 0} neighbors. Click to set as destination.`}
               aria-pressed={dest === id}
             />
           );
         })}
       </div>
+
+      {hoveredNode && (
+        <div className="manet-demo-node-tooltip" role="tooltip">
+          Node {hoveredNode} – {GRAPH[hoveredNode]?.length ?? 0} neighbor{(GRAPH[hoveredNode]?.length ?? 0) === 1 ? '' : 's'}: {(GRAPH[hoveredNode] ?? []).join(', ')}
+        </div>
+      )}
 
       {(flowLine || receivedText) && (
         <div className="manet-demo-flow" role="log" aria-live="polite">
@@ -423,13 +490,27 @@ export default function ManetDemo() {
         </div>
       )}
 
+      {path.length >= 2 && !isAnimating && (
+        <p className="manet-demo-hop-badge" aria-hidden="true">
+          {path.length - 1} hop{(path.length - 1) === 1 ? '' : 's'}
+        </p>
+      )}
+      {alternativePaths.length > 0 && (
+        <div className="manet-demo-alternatives">
+          {alternativePaths.map((alt, idx) => (
+            <p key={idx} className="manet-demo-alt-line">
+              Alternative path {alternativePaths.length > 1 ? `${idx + 1}: ` : ''}{alt.join(' → ')}
+            </p>
+          ))}
+        </div>
+      )}
       <p
         className="manet-demo-status"
         role="status"
         aria-live="polite"
         aria-atomic="true"
       >
-        {status || (path.length >= 2 ? `Last path: ${path.join(' → ')}` : '\u00a0')}
+        {status || (path.length >= 2 ? `Path: ${path.join(' → ')}` : !isAnimating ? 'Select source and destination, then click Send message.' : '\u00a0')}
       </p>
     </section>
   );

@@ -201,6 +201,23 @@ export default function MorseRadio() {
           Max {MAX_MESSAGE_LENGTH} characters. Only letters, numbers, and
           spaces are transmitted.
         </p>
+        <div className="morse-sample-row">
+          <span className="morse-sample-label">Sample:</span>
+          {['SOS', 'HELLO', 'HELLO WORLD'].map((sample) => (
+            <button
+              key={sample}
+              type="button"
+              className="btn btn-small"
+              onClick={() => {
+                const sanitized = sanitizeAndUpdateMorse(sample);
+                setMessage(sanitized);
+              }}
+              aria-label={`Load sample: ${sample}`}
+            >
+              {sample}
+            </button>
+          ))}
+        </div>
       </div>
 
       <section className="controls">

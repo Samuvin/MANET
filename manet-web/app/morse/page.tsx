@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import MorseRadio from '@/components/MorseRadio';
 import MorseDecoder from '@/components/MorseDecoder';
+import MorseReference from '@/components/MorseReference';
 
 export default function MorsePage() {
   return (
@@ -22,6 +23,7 @@ export default function MorsePage() {
       <section className="receive-block" aria-label="Receive">
         <MorseDecoder />
       </section>
+      <MorseReference />
     </main>
   );
 }
