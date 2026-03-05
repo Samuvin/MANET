@@ -658,10 +658,10 @@ header h1 {
 .manet-demo-graph-wrapper {
   position: relative;
   width: 100%;
-  max-width: 480px;
+  max-width: 600px;
   margin: 0 auto;
-  aspect-ratio: 4 / 3;
-  max-height: 360px;
+  aspect-ratio: 600 / 480;
+  max-height: 480px;
   background: var(--bg-panel);
   border: 1px solid var(--border);
   border-radius: 8px;

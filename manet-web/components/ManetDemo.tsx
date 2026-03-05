@@ -3,35 +3,63 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { textToMorse, morseToText, validateInput, MAX_MESSAGE_LENGTH } from '@/lib/morse';
 
-const NODE_IDS = ['A', 'B', 'C', 'D', 'E'] as const;
+const NODE_IDS = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'] as const;
 type NodeId = (typeof NODE_IDS)[number];
+
+const VIEWBOX_W = 600;
+const VIEWBOX_H = 480;
 
 /** Node positions [x, y] in SVG viewBox coordinates. */
 const NODE_POS: Record<NodeId, [number, number]> = {
-  A: [200, 45],
-  B: [70, 130],
-  C: [330, 130],
-  D: [200, 195],
-  E: [200, 265],
+  A: [120, 50],
+  B: [300, 50],
+  C: [480, 50],
+  D: [80, 160],
+  E: [240, 160],
+  F: [360, 160],
+  G: [520, 160],
+  H: [160, 270],
+  I: [300, 270],
+  J: [440, 270],
+  K: [240, 380],
+  L: [360, 380],
 };
 
 /** Adjacency list: each node -> list of neighbors. */
 const GRAPH: Record<NodeId, NodeId[]> = {
-  A: ['B', 'C'],
-  B: ['A', 'C', 'D'],
-  C: ['A', 'B', 'D'],
-  D: ['B', 'C', 'E'],
-  E: ['D'],
+  A: ['B', 'D'],
+  B: ['A', 'C', 'E'],
+  C: ['B', 'G'],
+  D: ['A', 'E', 'H'],
+  E: ['B', 'D', 'F', 'I'],
+  F: ['E', 'G', 'J'],
+  G: ['C', 'F'],
+  H: ['D', 'I', 'K'],
+  I: ['E', 'H', 'J', 'K'],
+  J: ['F', 'I', 'L'],
+  K: ['H', 'I', 'L'],
+  L: ['J', 'K'],
 };
 
 /** Edges as [from, to] pairs (from < to to avoid duplicates). */
 const EDGES: [NodeId, NodeId][] = [
   ['A', 'B'],
-  ['A', 'C'],
+  ['A', 'D'],
   ['B', 'C'],
-  ['B', 'D'],
-  ['C', 'D'],
+  ['B', 'E'],
+  ['C', 'G'],
   ['D', 'E'],
+  ['D', 'H'],
+  ['E', 'F'],
+  ['E', 'I'],
+  ['F', 'G'],
+  ['F', 'J'],
+  ['H', 'I'],
+  ['H', 'K'],
+  ['I', 'J'],
+  ['I', 'K'],
+  ['J', 'L'],
+  ['K', 'L'],
 ];
 
 /** BFS shortest path from source to dest. Returns path (node ids) or empty array. */
@@ -57,13 +85,13 @@ const SPEED_OPTIONS = [
   { value: 900, label: 'Faster' },
 ] as const;
 
-const VIEWBOX = '0 0 400 300';
+const VIEWBOX = `0 0 ${VIEWBOX_W} ${VIEWBOX_H}`;
 
 const MORSE_DISPLAY_MAX = 50;
 
 export default function ManetDemo() {
   const [source, setSource] = useState<NodeId>('A');
-  const [dest, setDest] = useState<NodeId>('E');
+  const [dest, setDest] = useState<NodeId>('L');
   const [messageInput, setMessageInput] = useState('');
   const [path, setPath] = useState<NodeId[]>([]);
   const [activeIndex, setActiveIndex] = useState(-1);
@@ -371,8 +399,8 @@ export default function ManetDemo() {
         {/* Invisible hit targets for keyboard + click (larger than circle) */}
         {NODE_IDS.map((id) => {
           const [x, y] = NODE_POS[id];
-          const pctX = (x / 400) * 100;
-          const pctY = (y / 300) * 100;
+          const pctX = (x / VIEWBOX_W) * 100;
+          const pctY = (y / VIEWBOX_H) * 100;
           return (
             <button
               key={id}
