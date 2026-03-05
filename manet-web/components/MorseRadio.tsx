@@ -2,7 +2,7 @@
 
 import { useCallback, useRef, useState } from 'react';
 import {
-  buildSchedule,
+  buildScheduleWithIndices,
   MAX_MESSAGE_LENGTH,
   textToMorse,
   validateInput,
@@ -22,6 +22,7 @@ export default function MorseRadio() {
   const [wpm, setWpm] = useState(DEFAULT_WPM);
   const [isPlaying, setIsPlaying] = useState(false);
   const [signalOn, setSignalOn] = useState(false);
+  const [playbackIndex, setPlaybackIndex] = useState<number>(-1);
   const [status, setStatus] = useState('');
   const [statusError, setStatusError] = useState(false);
 
@@ -71,7 +72,12 @@ export default function MorseRadio() {
   );
 
   const runSchedule = useCallback(
-    (schedule: ScheduleSegment[], soundOn: boolean, onDone: () => void) => {
+    (
+      schedule: ScheduleSegment[],
+      morseIndexBySegment: number[],
+      soundOn: boolean,
+      onDone: () => void
+    ) => {
       if (schedule.length === 0) {
         onDone();
         return;
@@ -92,14 +98,17 @@ export default function MorseRadio() {
       const runNext = () => {
         if (idx >= schedule.length) {
           setSignalOn(false);
+          setPlaybackIndex(-1);
           setIsPlaying(false);
           setStatus('Done.');
           onDone();
           return;
         }
         const seg = schedule[idx];
+        const morseIdx = morseIndexBySegment[idx] ?? -1;
         idx += 1;
         setSignalOn(seg.type === 'on');
+        setPlaybackIndex(morseIdx);
         timeoutsRef.current.push(setTimeout(runNext, seg.duration));
       };
       runNext();
@@ -112,6 +121,7 @@ export default function MorseRadio() {
       timeoutsRef.current.forEach(clearTimeout);
       timeoutsRef.current = [];
       setSignalOn(false);
+      setPlaybackIndex(-1);
       setIsPlaying(false);
       audioContextRef.current?.suspend().catch(() => {});
       return;
@@ -133,8 +143,8 @@ export default function MorseRadio() {
     setStatusError(false);
     setIsPlaying(true);
     const unitMs = wpmToUnitMs(wpm);
-    const schedule = buildSchedule(morseStr, unitMs);
-    runSchedule(schedule, soundEnabled, () => {});
+    const { schedule, morseIndexBySegment } = buildScheduleWithIndices(morseStr, unitMs);
+    runSchedule(schedule, morseIndexBySegment, soundEnabled, () => {});
   }, [message, wpm, soundEnabled, isPlaying, runSchedule]);
 
   const handleCopy = useCallback(() => {
@@ -173,7 +183,7 @@ export default function MorseRadio() {
     <section className="send-section">
       <h2 className="section-heading">Send</h2>
       <p className="section-desc">
-        Encode a message to Morse and play it as radio signals.
+        Type a message, encode to Morse, and play as radio (audio + signal). Copy Morse to clipboard.
       </p>
       <div className="input-section">
         <label htmlFor="message-input">Message</label>
@@ -245,6 +255,21 @@ export default function MorseRadio() {
             aria-label="Radio signal indicator"
           />
         </div>
+        {morse && (
+          <div className="morse-visual-wrap" role="status" aria-live="polite" aria-label="Morse code playback position">
+            <span className="morse-visual-label">Morse flow</span>
+            <div className="morse-visual">
+              {morse.split('').map((ch, i) => (
+                <span
+                  key={i}
+                  className={`morse-visual-char ${i === playbackIndex ? 'morse-visual-char-current' : ''}`}
+                >
+                  {ch === ' ' ? '\u00a0' : ch}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
       </section>
 
       {status && (

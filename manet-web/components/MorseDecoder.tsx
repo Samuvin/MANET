@@ -1,10 +1,7 @@
 'use client';
 
 import { useCallback, useState } from 'react';
-import {
-  morseToText,
-  validateMorseInput,
-} from '@/lib/morse';
+import { morseToText, validateMorseInput } from '@/lib/morse';
 
 export default function MorseDecoder() {
   const [morseInput, setMorseInput] = useState('');
@@ -52,7 +49,7 @@ export default function MorseDecoder() {
   return (
     <section className="receive-section">
       <h2 className="section-heading">Receive</h2>
-      <p className="section-desc">Paste or type Morse code to decode to text.</p>
+      <p className="section-desc">Paste Morse code to decode to text. Copy the decoded message.</p>
       <label htmlFor="morse-input">Morse code</label>
       <textarea
         id="morse-input"
@@ -62,7 +59,7 @@ export default function MorseDecoder() {
         aria-describedby="morse-hint"
         value={morseInput}
         onChange={(e) => setMorseInput(e.target.value)}
-        className="morse-input morse-input-masked"
+        className="morse-input"
       />
       <p id="morse-hint" className="hint">
         Use dots (.), dashes (-), and spaces. Words separated by 3+ spaces.

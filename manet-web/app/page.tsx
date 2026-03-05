@@ -1,17 +1,21 @@
-import MorseRadio from '@/components/MorseRadio';
-import MorseDecoder from '@/components/MorseDecoder';
+import Link from 'next/link';
+import HowManetWorks from '@/components/HowManetWorks';
+import ManetDemo from '@/components/ManetDemo';
 
 export default function Home() {
   return (
-    <main className="container">
+    <main id="main" className="container" tabIndex={-1}>
       <header>
-        <h1>MANET Morse Radio</h1>
+        <h1>MANET</h1>
         <p className="tagline">
-          Type a message and send it as radio signals (Morse code)
+          How device-to-device messaging works in a Mobile Ad-hoc Network. No fixed infrastructure — nodes relay messages.
+        </p>
+        <p className="header-link">
+          <Link href="/morse">Morse code simulator →</Link>
         </p>
       </header>
-      <MorseRadio />
-      <MorseDecoder />
+      <HowManetWorks />
+      <ManetDemo />
     </main>
   );
 }

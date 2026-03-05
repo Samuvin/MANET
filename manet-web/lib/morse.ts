@@ -63,18 +63,37 @@ export function buildSchedule(
   morse: string | null | undefined,
   unitMs: number
 ): ScheduleSegment[] {
-  if (!morse || typeof unitMs !== 'number' || unitMs <= 0) return [];
+  const result = buildScheduleWithIndices(morse, unitMs);
+  return result.schedule;
+}
+
+/**
+ * Build schedule and a parallel array: for each segment index, the index in the Morse string
+ * that is being played (for 'on' segments), or -1 for 'off'/gap. Used for playback visual.
+ */
+export function buildScheduleWithIndices(
+  morse: string | null | undefined,
+  unitMs: number
+): { schedule: ScheduleSegment[]; morseIndexBySegment: number[] } {
+  if (!morse || typeof unitMs !== 'number' || unitMs <= 0) {
+    return { schedule: [], morseIndexBySegment: [] };
+  }
   const schedule: ScheduleSegment[] = [];
+  const morseIndexBySegment: number[] = [];
   let i = 0;
   while (i < morse.length) {
     const ch = morse[i];
     if (ch === DOT) {
       schedule.push({ type: 'on', duration: unitMs });
+      morseIndexBySegment.push(i);
       schedule.push({ type: 'off', duration: unitMs });
+      morseIndexBySegment.push(-1);
       i += 1;
     } else if (ch === DASH) {
       schedule.push({ type: 'on', duration: 3 * unitMs });
+      morseIndexBySegment.push(i);
       schedule.push({ type: 'off', duration: unitMs });
+      morseIndexBySegment.push(-1);
       i += 1;
     } else if (ch === ' ') {
       let spaces = 0;
@@ -86,11 +105,12 @@ export function buildSchedule(
         type: 'off',
         duration: spaces >= 3 ? 7 * unitMs : 3 * unitMs,
       });
+      morseIndexBySegment.push(-1);
     } else {
       i += 1;
     }
   }
-  return schedule;
+  return { schedule, morseIndexBySegment };
 }
 
 export function wpmToUnitMs(wpm: number): number {

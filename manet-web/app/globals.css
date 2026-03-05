@@ -22,6 +22,27 @@
   box-sizing: border-box;
 }
 
+.skip-link {
+  position: absolute;
+  top: -100px;
+  left: 0.5rem;
+  z-index: 100;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--bg-dark);
+  background: var(--text);
+  border-radius: 6px;
+  text-decoration: none;
+  transition: top 0.2s ease;
+}
+
+.skip-link:focus {
+  top: 0.5rem;
+  outline: none;
+  box-shadow: 0 0 0 3px var(--focus-ring);
+}
+
 body {
   margin: 0;
   font-family: ui-sans-serif, system-ui, -apple-system, sans-serif;
@@ -52,6 +73,47 @@ header h1 {
   margin: 0;
   color: var(--text-muted);
   font-size: 0.875rem;
+}
+
+.header-link {
+  margin: 0.5rem 0 0 0;
+  font-size: 0.875rem;
+}
+
+.header-link a {
+  color: var(--signal-on);
+  text-decoration: none;
+}
+
+.header-link a:hover {
+  text-decoration: underline;
+}
+
+.morse-nav {
+  margin-bottom: 0.75rem;
+}
+
+.morse-nav-link {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  text-decoration: none;
+}
+
+.morse-nav-link:hover {
+  color: var(--signal-on);
+  text-decoration: underline;
+}
+
+.morse-nav-link:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--focus-ring);
+  border-radius: 4px;
+}
+
+.morse-page-title {
+  margin: 0 0 0.25rem 0;
+  font-size: 1.5rem;
+  font-weight: 600;
 }
 
 .input-section {
@@ -163,6 +225,15 @@ header h1 {
   background: var(--secondary-hover);
 }
 
+.btn-danger {
+  background: var(--error);
+  color: #fff;
+}
+
+.btn-danger:hover {
+  background: #da3633;
+}
+
 .btn-small {
   padding: 0.25rem 0.5rem;
   font-size: 0.75rem;
@@ -197,6 +268,41 @@ header h1 {
   box-shadow: 0 0 1rem var(--signal-on);
 }
 
+.morse-visual-wrap {
+  margin-top: 1rem;
+  padding: 0.75rem;
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+
+.morse-visual-label {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  margin-bottom: 0.5rem;
+}
+
+.morse-visual {
+  font-family: ui-monospace, monospace;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  word-break: break-all;
+  letter-spacing: 0.05em;
+}
+
+.morse-visual-char {
+  padding: 0 0.05em;
+  border-radius: 2px;
+  transition: background 0.05s ease, color 0.05s ease;
+}
+
+.morse-visual-char-current {
+  background: var(--signal-on);
+  color: var(--bg-dark);
+}
+
 .morse-output-container {
   display: flex;
   flex-wrap: wrap;
@@ -227,9 +333,18 @@ header h1 {
   color: var(--error);
 }
 
+.send-block {
+  margin-bottom: 2.5rem;
+}
+
+.receive-block {
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+}
+
 .send-section,
 .receive-section {
-  margin-bottom: 2rem;
+  margin-bottom: 0;
 }
 
 .section-heading {
@@ -309,4 +424,349 @@ header h1 {
   margin: 0.5rem 0 1rem 0;
   min-height: 1.5em;
   word-break: break-all;
+}
+
+.listen-block {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+}
+
+.listen-heading {
+  margin: 0 0 0.25rem 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+/* How MANET works */
+.how-manet-section {
+  margin-bottom: 2.5rem;
+}
+
+.manet-diagram {
+  margin: 1rem 0;
+  padding: 1rem;
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.manet-diagram-svg {
+  display: block;
+  width: 100%;
+  max-width: 320px;
+  height: auto;
+  margin: 0 auto;
+}
+
+.manet-diagram-svg .manet-diagram-arrow {
+  animation: manet-diagram-pulse 2s ease-in-out infinite;
+}
+
+@keyframes manet-diagram-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .manet-diagram-svg .manet-diagram-arrow {
+    animation: none;
+  }
+}
+
+.how-manet-learn {
+  margin-top: 1rem;
+}
+
+.how-manet-learn-trigger {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--signal-on);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.25rem 0;
+}
+
+.how-manet-learn-trigger:hover {
+  text-decoration: underline;
+}
+
+.how-manet-learn-trigger:focus {
+  outline: none;
+  border-radius: 4px;
+  box-shadow: 0 0 0 2px var(--focus-ring);
+}
+
+.how-manet-more {
+  margin-top: 0.75rem;
+  padding-left: 1.25rem;
+}
+
+.how-manet-more[hidden] {
+  display: none;
+}
+
+.how-manet-list {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+
+.how-manet-list li {
+  margin-bottom: 0.35rem;
+}
+
+/* Interactive MANET demo */
+.manet-demo-section {
+  margin-bottom: 2.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+}
+
+.manet-demo-message-row {
+  margin-bottom: 1rem;
+}
+
+.manet-demo-label-block {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text);
+  margin-bottom: 0.25rem;
+}
+
+.manet-demo-message-input {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  font-size: 1rem;
+  font-family: inherit;
+  color: var(--text);
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+
+.manet-demo-message-input::placeholder {
+  color: var(--text-muted);
+}
+
+.manet-demo-message-input:focus {
+  outline: none;
+  border-color: var(--focus-ring);
+  box-shadow: 0 0 0 2px rgba(88, 166, 255, 0.25);
+}
+
+.manet-demo-hint {
+  display: block;
+  margin-top: 0.25rem;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.manet-demo-flow {
+  margin-top: 1rem;
+  padding: 0.75rem 1rem;
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+
+.manet-demo-flow-line {
+  margin: 0 0 0.25rem 0;
+  font-size: 0.875rem;
+  font-family: ui-monospace, monospace;
+  color: var(--signal-on);
+  word-break: break-all;
+}
+
+.manet-demo-received {
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--primary);
+}
+
+.manet-demo-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem 1.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.manet-demo-control-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.manet-demo-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+.manet-demo-node-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2rem;
+  height: 2rem;
+  padding: 0 0.5rem;
+  font-weight: 600;
+  font-size: 0.9rem;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+}
+
+.manet-demo-node-source {
+  border-color: var(--primary);
+  background: rgba(35, 134, 54, 0.2);
+  color: var(--primary);
+}
+
+.manet-demo-node-dest {
+  border-color: var(--signal-on);
+  background: rgba(88, 166, 255, 0.15);
+  color: var(--signal-on);
+}
+
+.manet-demo-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-left: auto;
+}
+
+.manet-demo-select {
+  padding: 0.4rem 0.65rem;
+  font-size: 0.875rem;
+  font-family: inherit;
+  color: var(--text);
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+
+.manet-demo-select:focus {
+  outline: none;
+  border-color: var(--focus-ring);
+  box-shadow: 0 0 0 2px rgba(88, 166, 255, 0.25);
+}
+
+.manet-demo-graph-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+  aspect-ratio: 4 / 3;
+  max-height: 360px;
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.manet-demo-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.manet-demo-edges line.manet-demo-edge {
+  stroke: var(--border);
+  stroke-width: 2;
+  transition: stroke 0.2s ease, stroke-width 0.2s ease;
+}
+
+.manet-demo-edges line.manet-demo-edge-path {
+  stroke: var(--signal-on);
+  stroke-opacity: 0.5;
+}
+
+.manet-demo-edges line.manet-demo-edge-active {
+  stroke: var(--signal-on);
+  stroke-width: 3;
+  stroke-opacity: 1;
+}
+
+.manet-demo-path-line {
+  stroke: var(--signal-on);
+  stroke-width: 3;
+  fill: none;
+  stroke-linecap: round;
+  animation: manet-dash 0.6s linear infinite;
+}
+
+@keyframes manet-dash {
+  to { stroke-dashoffset: -10; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .manet-demo-path-line {
+    animation: none;
+    stroke-dasharray: none;
+  }
+}
+
+.manet-demo-node-svg {
+  cursor: default;
+  transition: transform 0.15s ease;
+}
+
+.manet-demo-node-svg .manet-demo-node-circle {
+  transition: stroke 0.2s ease, stroke-width 0.2s ease, filter 0.2s ease;
+}
+
+.manet-demo-node-svg-active .manet-demo-node-circle {
+  stroke: var(--signal-on);
+  stroke-width: 3;
+  filter: drop-shadow(0 0 8px var(--signal-on));
+}
+
+.manet-demo-node-svg-source .manet-demo-node-circle {
+  stroke: var(--primary);
+  stroke-width: 2.5;
+}
+
+.manet-demo-node-svg-dest .manet-demo-node-circle {
+  stroke: var(--signal-on);
+}
+
+.manet-demo-node-hit {
+  position: absolute;
+  width: 52px;
+  height: 52px;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+}
+
+.manet-demo-node-hit:hover:not(:disabled) {
+  background: rgba(88, 166, 255, 0.1);
+}
+
+.manet-demo-node-hit:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--focus-ring);
+}
+
+.manet-demo-node-hit:disabled {
+  cursor: not-allowed;
+}
+
+.manet-demo-status {
+  margin: 0.75rem 0 0 0;
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  min-height: 1.5rem;
+}
+
+.morse-optional-section {
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
 }
