@@ -196,16 +196,42 @@ export default function ManetDemo() {
 
       <div className="manet-demo-controls">
         <div className="manet-demo-control-group">
-          <span className="manet-demo-label">Source</span>
-          <span className="manet-demo-node-badge manet-demo-node-source" aria-hidden="true">
-            {source}
-          </span>
+          <label htmlFor="demo-source-select" className="manet-demo-label">
+            Source
+          </label>
+          <select
+            id="demo-source-select"
+            value={source}
+            onChange={(e) => setSource(e.target.value as NodeId)}
+            className="manet-demo-select"
+            disabled={isAnimating}
+            aria-label="Select source node"
+          >
+            {NODE_IDS.map((id) => (
+              <option key={id} value={id}>
+                Node {id}
+              </option>
+            ))}
+          </select>
         </div>
         <div className="manet-demo-control-group">
-          <span className="manet-demo-label">Destination</span>
-          <span className="manet-demo-node-badge manet-demo-node-dest" aria-hidden="true">
-            {dest}
-          </span>
+          <label htmlFor="demo-dest-select" className="manet-demo-label">
+            Destination
+          </label>
+          <select
+            id="demo-dest-select"
+            value={dest}
+            onChange={(e) => setDest(e.target.value as NodeId)}
+            className="manet-demo-select"
+            disabled={isAnimating}
+            aria-label="Select destination node"
+          >
+            {NODE_IDS.map((id) => (
+              <option key={id} value={id}>
+                Node {id}
+              </option>
+            ))}
+          </select>
         </div>
         <div className="manet-demo-control-group">
           <label htmlFor="demo-speed" className="manet-demo-label">
